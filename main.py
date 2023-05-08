@@ -63,6 +63,16 @@ async def createKrisnam(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"Challenge created! Challenge ID: {challenge_id}")
     else:
         await update.message.reply_text(f"Too Many Reqs")
+async def createMorris(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    challenge_id = await create_challenge(username="AnonymousMorris")
+    if challenge_id != "plain'":
+        challenge_id = 'https://lichess.org/' + challenge_id
+        print(f"Challenge created! Challenge ID: {challenge_id}")
+        # await update.message.reply_text('Create your own game nub')
+        await update.message.reply_text(f"Challenge created! Challenge ID: {challenge_id}")
+    else:
+        await update.message.reply_text(f"Too Many Reqs")
 # Log errors
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f'Update {update} caused error {context.error}')
@@ -78,6 +88,7 @@ if __name__ == '__main__':
     app.add_handler(CommandHandler('createtgp', createTGP))
     app.add_handler(CommandHandler('creategambit', createGambit))
     app.add_handler(CommandHandler('createkrisnam', createKrisnam))
+    app.add_handler(CommandHandler('createmorris', createMorris))
 
     # Messages
     #app.add_handler(MessageHandler(filters.TEXT, handle_message))
