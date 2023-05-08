@@ -9,7 +9,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 
 print('Starting up bot...')
 
-TOKEN: Final = ''
+TOKEN: Final = '' # PUT YOUR API TOKEN GIVEN BY BOTFATHER
 BOT_USERNAME: Final = '@LichessChallengeBot'
 
 
@@ -25,7 +25,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Lets us use the /custom command
 async def create_challenge(username: str):
-    client = APIClient(token="")
+    client = APIClient(token="") # PUT YOUR LICHESS API KEY
     response = await client.challenges.create(username=username, color="white" , rated=True, time_limit=180 , time_increment=0)
     print((response))
     response=str(response)
