@@ -9,7 +9,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 
 print('Starting up bot...')
 
-TOKEN: Final = '' # PUT YOUR API TOKEN GIVEN BY BOTFATHER
+TOKEN: Final = '' # Replace with your Token
 BOT_USERNAME: Final = '@LichessChallengeBot'
 
 
@@ -25,12 +25,14 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Lets us use the /custom command
 async def create_challenge(username: str):
-    client = APIClient(token="") # PUT YOUR LICHESS API KEY
+    client = APIClient(token="") # Replace with your Token
     response = await client.challenges.create(username=username, color="white" , rated=True, time_limit=180 , time_increment=0)
     print((response))
     response=str(response)
     challenge_url_index=response.rfind('/');
-    return response[challenge_url_index+1:challenge_url_index+7]
+    end=challenge_url_index+1
+    while(response[end]!="'"): end+=1
+    return response[challenge_url_index+1:end]
 async def createTGP(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     challenge_id = await create_challenge(username="Thegreatprotector")
@@ -73,6 +75,9 @@ async def createMorris(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"Challenge created! Challenge ID: {challenge_id}")
     else:
         await update.message.reply_text(f"Too Many Reqs")
+
+
+
 # Log errors
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f'Update {update} caused error {context.error}')
@@ -89,6 +94,7 @@ if __name__ == '__main__':
     app.add_handler(CommandHandler('creategambit', createGambit))
     app.add_handler(CommandHandler('createkrisnam', createKrisnam))
     app.add_handler(CommandHandler('createmorris', createMorris))
+    #app.add_handler(CommandHandler('createrandom', createRand))
 
     # Messages
     #app.add_handler(MessageHandler(filters.TEXT, handle_message))
