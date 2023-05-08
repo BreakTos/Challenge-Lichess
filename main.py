@@ -9,7 +9,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 
 print('Starting up bot...')
 
-TOKEN: Final = '' # Replace with your Token
+TOKEN: Final = '6264740670:AAHjJxYHFP8napVe2BNY8fb6NxQagtVIqzY' # Replace with your Token
 BOT_USERNAME: Final = '@LichessChallengeBot'
 
 
@@ -25,57 +25,27 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Lets us use the /custom command
 async def create_challenge(username: str):
-    client = APIClient(token="") # Replace with your Token
+    client = APIClient(token="lip_w8yh7plyueuOgsV4IGbF") # Replace with your Token
     response = await client.challenges.create(username=username, color="white" , rated=True, time_limit=180 , time_increment=0)
     print((response))
+    print("lichess.org/"+username)
     response=str(response)
     challenge_url_index=response.rfind('/');
     end=challenge_url_index+1
     while(response[end]!="'"): end+=1
     return response[challenge_url_index+1:end]
-async def createTGP(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def create(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
-    challenge_id = await create_challenge(username="Thegreatprotector")
-    if challenge_id != "plain'":
+    msg: str = update.message.text
+   # await update.message.reply_text(f""+msg[7:])
+    challenge_id = await create_challenge(username=msg[8:])
+    if challenge_id != "plain":
         challenge_id = 'https://lichess.org/' + challenge_id
         print(f"Challenge created! Challenge ID: {challenge_id}")
         # await update.message.reply_text('Create your own game nub')
         await update.message.reply_text(f"Challenge created! Challenge ID: {challenge_id}")
     else:
         await update.message.reply_text(f"Too Many Reqs")
-async def createGambit(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
-    challenge_id = await create_challenge(username="gambit_pnav")
-    if challenge_id != "plain'":
-        challenge_id = 'https://lichess.org/' + challenge_id
-        print(f"Challenge created! Challenge ID: {challenge_id}")
-        # await update.message.reply_text('Create your own game nub')
-        await update.message.reply_text(f"Challenge created! Challenge ID: {challenge_id}")
-    else:
-        await update.message.reply_text(f"Too Many Reqs")
-async def createKrisnam(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
-    challenge_id = await create_challenge(username="KrisnamS")
-    print(challenge_id)
-
-    if challenge_id != "plain'":
-        challenge_id = 'https://lichess.org/' + challenge_id
-        print(f"Challenge created! Challenge ID: {challenge_id}")
-        #await update.message.reply_text('Create your own game nub')
-        await update.message.reply_text(f"Challenge created! Challenge ID: {challenge_id}")
-    else:
-        await update.message.reply_text(f"Too Many Reqs")
-async def createMorris(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
-    challenge_id = await create_challenge(username="AnonymousMorris")
-    if challenge_id != "plain'":
-        challenge_id = 'https://lichess.org/' + challenge_id
-        print(f"Challenge created! Challenge ID: {challenge_id}")
-        # await update.message.reply_text('Create your own game nub')
-        await update.message.reply_text(f"Challenge created! Challenge ID: {challenge_id}")
-    else:
-        await update.message.reply_text(f"Too Many Reqs")
-
 
 
 # Log errors
@@ -90,10 +60,7 @@ if __name__ == '__main__':
     # Commands
     app.add_handler(CommandHandler('start', start_command))
     app.add_handler(CommandHandler('help', help_command))
-    app.add_handler(CommandHandler('createtgp', createTGP))
-    app.add_handler(CommandHandler('creategambit', createGambit))
-    app.add_handler(CommandHandler('createkrisnam', createKrisnam))
-    app.add_handler(CommandHandler('createmorris', createMorris))
+    app.add_handler(CommandHandler('create', create))
     #app.add_handler(CommandHandler('createrandom', createRand))
 
     # Messages
