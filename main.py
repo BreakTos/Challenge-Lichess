@@ -24,9 +24,10 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 # Lets us use the /custom command
-async def create_challenge(username: str):
+async def create_challenge(username: str , color:str):
     client = APIClient(token="lip_w8yh7plyueuOgsV4IGbF") # Replace with your Token
-    response = await client.challenges.create(username=username, color="white" , rated=True, time_limit=180 , time_increment=0)
+    color=str(color)
+    response = await client.challenges.create(username=username, color=color , rated=True, time_limit=180 , time_increment=0)
     print((response))
     print("lichess.org/"+username)
     response=str(response)
@@ -37,8 +38,16 @@ async def create_challenge(username: str):
 async def create(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     msg: str = update.message.text
+    Fuser=msg[8:]
+    user=""
+    for i in Fuser:
+        if i!=' ':
+            user+=i
+        else:
+            break
+    color=Fuser[len(user)+1:]
    # await update.message.reply_text(f""+msg[7:])
-    challenge_id = await create_challenge(username=msg[8:])
+    challenge_id = await create_challenge(username=user,color=color)
     if challenge_id != "plain":
         challenge_id = 'https://lichess.org/' + challenge_id
         print(f"Challenge created! Challenge ID: {challenge_id}")
