@@ -3,6 +3,7 @@ import lichess.api
 from lichess.format import SINGLE_PGN
 from lichess_client import APIClient
 import asyncio
+import json
 # pip install python-telegram-bot
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
@@ -22,12 +23,42 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('Try typing anything and I will do my best to respond!')
 
+async  def update(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
+    msg: str = update.message.text
+    dig = str(update)
+    dig = dig[dig.find("first_name"):dig.find("is_bot") - 2]
+    dig = dig[dig.rfind("=") + 1:]
+    Fuser=(list)(msg[7:].split())
+    print(Fuser)
+    with open('Keyss.json') as json_file:
+        AllKeys = json.load(json_file)
+        AllKeys[dig]=Fuser[0]
+        print(AllKeys)
+    json_data = json.dumps(AllKeys)
+
+    # Write JSON string to a file
+    with open("keyss.json", "w") as outfile:
+        outfile.write(json_data)
+
+    await update.message.reply_text(f"Updated your Key")
 # Lets us use the /custom command
-async def create_challenge(username: str , color:str):
-    client = APIClient(token="lip_w8yh7plyueuOgsV4IGbF") # Replace with your Token
+async def create_challenge(challenger: int , username: str , color:str , time_limit:int , time_increment:int):
+    # AllKeys={}
+    # AllKeys["bosscoder"]="lip_w8yh7plyueuOgsV4IGbF"
+    # AllKeys["animewilldiesoon"]="lip_Xo1vvyGGIJDCQ3ylpUR9"
+    # AllKeys["gambit_bfold"]="lip_SD8tMjuNPKMWD1fnysJt"
+    # AllKeys["maggie619"]="lip_KsWKHq7GoEO8yhDJF4Be"
+    # AllKeys["starboy_001"]="lip_zl4fx2iNlbW5CZAuBLzc"
+
+    #Loading json file
+    with open('Keyss.json') as json_file:
+        AllKeys = json.load(json_file)
+
+
+    client = APIClient(token=AllKeys[(str)(challenger)]) # Replace with your Token
     color=str(color)
-    response = await client.challenges.create(username=username, color=color , rated=True, time_limit=180 , time_increment=0)
+    response = await client.challenges.create(username=username, color=color , rated=True, time_limit=time_limit , time_increment=time_increment)
     print((response))
     print("lichess.org/"+username)
     response=str(response)
@@ -35,27 +66,26 @@ async def create_challenge(username: str , color:str):
     end=challenge_url_index+1
     while(response[end]!="'"): end+=1
     return response[challenge_url_index+1:end]
-async def create(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def challenge(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    dig=str(update)
+    dig=dig[dig.find("first_name"):dig.find("is_bot")-2]
+    dig=dig[dig.rfind("=")+1:]
+    print(dig)
 
     msg: str = update.message.text
-    Fuser=msg[8:]
-    user=""
-    for i in Fuser:
-        if i!=' ':
-            user+=i
-        else:
-            break
-    color=Fuser[len(user)+1:]
-   # await update.message.reply_text(f""+msg[7:])
-    challenge_id = await create_challenge(username=user,color=color)
-    if challenge_id != "plain":
+    Fuser=(list)(msg[11:].split())
+    print(Fuser)
+    challenge_id = await create_challenge(challenger=dig,username=Fuser[0],color=Fuser[1],time_limit=Fuser[2],time_increment=Fuser[3])
+    if challenge_id != "plain" and challenge_id !='json':
         challenge_id = 'https://lichess.org/' + challenge_id
         print(f"Challenge created! Challenge ID: {challenge_id}")
         # await update.message.reply_text('Create your own game nub')
         await update.message.reply_text(f"Challenge created! Challenge ID: {challenge_id}")
     else:
-        await update.message.reply_text(f"Too Many Reqs")
-
+        if challenge_id=='plain':
+            await update.message.reply_text(f"Too Many Reqs")
+        else:
+            await update.message.reply_text(f"Account does not exist or closed")
 
 # Log errors
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -69,7 +99,9 @@ if __name__ == '__main__':
     # Commands
     app.add_handler(CommandHandler('start', start_command))
     app.add_handler(CommandHandler('help', help_command))
-    app.add_handler(CommandHandler('create', create))
+    app.add_handler(CommandHandler('challenge', challenge))
+    app.add_handler(CommandHandler('update', update))
+
     #app.add_handler(CommandHandler('createrandom', createRand))
 
     # Messages
