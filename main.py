@@ -75,7 +75,10 @@ async def challenge(update: Update, context: ContextTypes.DEFAULT_TYPE):
     msg: str = update.message.text
     Fuser=(list)(msg[11:].split())
     print(Fuser)
-    challenge_id = await create_challenge(challenger=dig,username=Fuser[0],color=Fuser[1],time_limit=Fuser[2],time_increment=Fuser[3])
+    col=""
+    if len(Fuser[1])==5:
+        col=Fuser[1]
+    challenge_id = await create_challenge(challenger=dig,username=Fuser[0],color=col,time_limit=Fuser[-2],time_increment=Fuser[-1])
     if challenge_id != "plain" and challenge_id !='json':
         challenge_id = 'https://lichess.org/' + challenge_id
         print(f"Challenge created! Challenge ID: {challenge_id}")
