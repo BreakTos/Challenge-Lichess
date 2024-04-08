@@ -36,7 +36,11 @@ async  def update(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f"Updated your Key")
 # Lets us use the /custom command
 async def create_challenge(challenger: int , username: str , color:str , time_limit:int , time_increment:int):
-
+    
+    if str(challenger) not in AllKeys.keys():
+         await update.message.reply_text(f"https://lichess.org/account/oauth/token/create?scopes[]=challenge:write&scopes[]=puzzle:read&description=Prefilled+token+example")
+         await update.message.reply_text(f"Click on above link and copy your api key. Send /update 'yourApiKey' on chat after it")
+         return
     client = APIClient(token=AllKeys[(str)(challenger)]) # Replace with your Token
     color=str(color)
     response = await client.challenges.create(username=username, color=color , rated=True, time_limit=time_limit , time_increment=time_increment)
