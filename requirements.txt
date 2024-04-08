@@ -1,0 +1,3 @@
+async_lichess_sdk==1.1.0.7
+python-telegram-bot==21.0.1
+python_lichess==0.10
