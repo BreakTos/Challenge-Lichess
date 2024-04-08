@@ -16,7 +16,7 @@ BOT_USERNAME: Final = '@LichessChallengeBot'
 
 # Lets us use the /start command
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text('Hello there! I can create Lichess Challenges for you in groups')
+    await update.message.reply_text("Hello there! I can create Lichess Challenges for you in groups. Use /challenge 'opponentName' 'seconds' 'increment' ")
 
 
 # Lets us use the /help command
@@ -33,14 +33,10 @@ async  def update(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(Fuser)
     AllKeys[dig]=Fuser[0]
     print(AllKeys)
-    await update.message.reply_text(f"Updated your Key")
+    await update.message.reply_text(f"Updated your Key, Now you can use /challenge command")
 # Lets us use the /custom command
 async def create_challenge(challenger: int , username: str , color:str , time_limit:int , time_increment:int):
     
-    if str(challenger) not in AllKeys.keys():
-         await update.message.reply_text(f"https://lichess.org/account/oauth/token/create?scopes[]=challenge:write&scopes[]=puzzle:read&description=Prefilled+token+example")
-         await update.message.reply_text(f"Click on above link and copy your api key. Send /update 'yourApiKey' on chat after it")
-         return
     client = APIClient(token=AllKeys[(str)(challenger)]) # Replace with your Token
     color=str(color)
     response = await client.challenges.create(username=username, color=color , rated=True, time_limit=time_limit , time_increment=time_increment)
@@ -55,8 +51,11 @@ async def challenge(update: Update, context: ContextTypes.DEFAULT_TYPE):
     dig=str(update)
     dig=dig[dig.find("first_name"):dig.find("is_bot")-2]
     dig=dig[dig.rfind("=")+1:]
-    print(dig)
-
+    print(dig+"helllo")
+    if dig not in AllKeys.keys():
+        await update.message.reply_text(f"https://lichess.org/account/oauth/token/create?scopes[]=challenge:write&scopes[]=puzzle:read&description=Prefilled+token+example")
+        await update.message.reply_text(f"Copy the key from here and send /update 'yourApiKey' to send challenges")
+        return
     msg: str = update.message.text
     Fuser=(list)(msg[11:].split())
     print(Fuser)
