@@ -4,7 +4,7 @@ from lichess.format import SINGLE_PGN
 from lichess_client import APIClient
 import asyncio
 import json
-# pip install python-telegram-bot
+import requests
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
@@ -12,6 +12,19 @@ print('Starting up bot...')
 AllKeys={}
 TOKEN: Final = '6264740670:AAHjJxYHFP8napVe2BNY8fb6NxQagtVIqzY' # Replace with your Token
 BOT_USERNAME: Final = '@LichessChallengeBot'
+
+async def open(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    url = 'https://lichess.org/'+"api"+'/challenge/open'
+    msg = update.message.text
+    # print(msg+"x")
+    msgg:list = msg.split(' ')
+    # print(msgg[1])
+    response =  requests.post(url,json={
+        "clock.limit":msgg[1],
+        "clock.increment":msgg[2]
+    })
+    
+    await update.message.reply_text(response.json()["url"])
 
 
 # Lets us use the /start command
@@ -88,6 +101,7 @@ if __name__ == '__main__':
     app.add_handler(CommandHandler('help', help_command))
     app.add_handler(CommandHandler('challenge', challenge))
     app.add_handler(CommandHandler('update', update))
+    app.add_handler(CommandHandler('open', open))
 
     #app.add_handler(CommandHandler('createrandom', createRand))
 
