@@ -10,7 +10,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 
 print('Starting up bot...')
 AllKeys={}
-TOKEN: Final = '6264740670:AAHjJxYHFP8napVe2BNY8fb6NxQagtVIqzY' # Replace with your Token
+TOKEN: Final = '6264740670:AAEfMIttPUnYmH4-H37Y53c7pwDgWflbiMQ' # Replace with your Token
 BOT_USERNAME: Final = '@LichessChallengeBot'
 
 async def open(update: Update, context: ContextTypes.DEFAULT_TYPE):
