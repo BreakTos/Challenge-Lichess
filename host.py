@@ -13,6 +13,38 @@ AllKeys={}
 TOKEN: Final = '6264740670:AAEfMIttPUnYmH4-H37Y53c7pwDgWflbiMQ' # Replace with your Token
 BOT_USERNAME: Final = '@LichessChallengeBot'
 
+async def blitz(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    url = 'https://lichess.org/'+"api"+'/challenge/open'
+    # msg = update.message.text
+    # print(msg+"x")
+    # msgg:list = msg.split(' ')
+    # print(msgg[1])
+    inc = 0
+    # if(len(msgg)>2): inc = msgg[2]
+    response =  requests.post(url,json={
+        "clock.limit":180,
+        "clock.increment":0
+    })
+    
+    await update.message.reply_text(response.json()["url"])
+
+async def bullet(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    url = 'https://lichess.org/'+"api"+'/challenge/open'
+    # msg = update.message.text
+    # print(msg+"x")
+    # msgg:list = msg.split(' ')
+    # print(msgg[1])
+    inc = 0
+    # if(len(msgg)>2): inc = msgg[2]
+    response =  requests.post(url,json={
+        "clock.limit":60,
+        "clock.increment":0
+    })
+    
+    await update.message.reply_text(response.json()["url"])
+
+
+
 async def open(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = 'https://lichess.org/'+"api"+'/challenge/open'
     msg = update.message.text
@@ -93,17 +125,38 @@ async def challenge(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     print(f'Update {update} caused error {context.error}')
 
+async def send_hi_to_groups(context: ContextTypes.DEFAULT_TYPE):
+    updates = await context.bot.get_updates()
+
+    # Get unique group chat IDs
+    group_chat_ids = set()
+    print((len)(updates))
+    for update in updates:
+        chat_id = update.effective_chat.id
+        if update.effective_chat.type == 'group':
+            group_chat_ids.add(chat_id)
+
+    # Send "Hi" message to each group
+    for chat_id in group_chat_ids:
+        await context.bot.send_message(chat_id=chat_id, text="Hi")
+
+async def startup_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await send_hi_to_groups(context)
+
 
 # Run the program
 if __name__ == '__main__':
     app = Application.builder().token(TOKEN).build()
 
     # Commands
+    
     app.add_handler(CommandHandler('start', start_command))
     app.add_handler(CommandHandler('help', help_command))
     app.add_handler(CommandHandler('challenge', challenge))
     app.add_handler(CommandHandler('update', update))
     app.add_handler(CommandHandler('open', open))
+    app.add_handler(CommandHandler('blitz', blitz))
+    app.add_handler(CommandHandler('bullet', bullet))
 
     #app.add_handler(CommandHandler('createrandom', createRand))
 
