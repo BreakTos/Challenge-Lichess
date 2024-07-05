@@ -19,9 +19,11 @@ async def open(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # print(msg+"x")
     msgg:list = msg.split(' ')
     # print(msgg[1])
+    inc = 0
+    if(len(msgg)>2): inc = msgg[2]
     response =  requests.post(url,json={
         "clock.limit":msgg[1],
-        "clock.increment":msgg[2]
+        "clock.increment":inc
     })
     
     await update.message.reply_text(response.json()["url"])
@@ -29,7 +31,7 @@ async def open(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Lets us use the /start command
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Hello there! I can create Lichess Challenges for you in groups. Use /challenge 'opponentName' 'seconds' 'increment' ")
+    await update.message.reply_text("Hello there! I can create Lichess Challenges for you in groups. Use /open timeInSeconds ")
 
 
 # Lets us use the /help command
