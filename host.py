@@ -13,6 +13,39 @@ AllKeys={}
 TOKEN: Final = '6264740670:AAEfMIttPUnYmH4-H37Y53c7pwDgWflbiMQ' # Replace with your Token
 BOT_USERNAME: Final = '@LichessChallengeBot'
 
+async def blitzR(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    url = 'https://lichess.org/'+"api"+'/challenge/open'
+    # msg = update.message.text
+    # print(msg+"x")
+    # msgg:list = msg.split(' ')
+    # print(msgg[1])
+    inc = 0
+    # if(len(msgg)>2): inc = msgg[2]
+    response =  requests.post(url,json={
+        "rated":True,
+        "clock.limit":180,
+        "clock.increment":0
+    })
+    
+    await update.message.reply_text(response.json()["url"])
+
+
+async def bulletR(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    url = 'https://lichess.org/'+"api"+'/challenge/open'
+    # msg = update.message.text
+    # print(msg+"x")
+    # msgg:list = msg.split(' ')
+    # print(msgg[1])
+    inc = 0
+    # if(len(msgg)>2): inc = msgg[2]
+    response =  requests.post(url,json={
+        "rated":True,
+        "clock.limit":60,
+        "clock.increment":0
+    })
+    
+    await update.message.reply_text(response.json()["url"])
+
 async def blitz(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = 'https://lichess.org/'+"api"+'/challenge/open'
     # msg = update.message.text
@@ -157,6 +190,9 @@ if __name__ == '__main__':
     app.add_handler(CommandHandler('open', open))
     app.add_handler(CommandHandler('blitz', blitz))
     app.add_handler(CommandHandler('bullet', bullet))
+    
+    app.add_handler(CommandHandler('blitzR', blitzR))
+    app.add_handler(CommandHandler('bulletR', bulletR))
 
     #app.add_handler(CommandHandler('createrandom', createRand))
 
