@@ -1,5 +1,6 @@
 from typing import Final
 import lichess.api
+import re
 from lichess.format import SINGLE_PGN
 from lichess_client import APIClient
 import asyncio
@@ -197,6 +198,8 @@ if __name__ == '__main__':
     #app.add_handler(CommandHandler('createrandom', createRand))
 
     # Messages
+    hi_filter = filters.Regex(re.compile(r'^(?i)\s*(hi|hii|hello|ya|anyone|Chess|chess|Hello|Hi)\s*$'))
+    app.add_handler(MessageHandler(hi_filter, start_command))
     #app.add_handler(MessageHandler(filters.TEXT, handle_message))
 
     # Log all errors
